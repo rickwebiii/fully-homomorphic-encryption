@@ -51,4 +51,6 @@ COPY . .
 RUN bazel build @llvm_toolchain//:all
 
 # Build all targets.
-RUN bazel build ...
+#RUN bazel build ...
+
+ENTRYPOINT bash
