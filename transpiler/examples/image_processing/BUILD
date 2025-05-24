@@ -3,7 +3,7 @@ load("//transpiler:fhe.bzl", "fhe_cc_library")
 load("//transpiler/rust:fhe_rs.bzl", "fhe_rust_library")
 load("@rules_rust//rust:defs.bzl", "rust_library", "rust_test")
 load("//transpiler/jaxite:fhe_py.bzl", "fhe_py_library")
-load("@rules_python//python:defs.bzl", "py_binary")
+#load("@rules_python//python:defs.bzl", "py_binary")
 
 package(
     default_applicable_licenses = ["@com_google_fully_homomorphic_encryption//:license"],

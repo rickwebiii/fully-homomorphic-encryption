@@ -1,6 +1,6 @@
 """Rules for generating FHE targeting Python cryptograhpic backends."""
 
-load("@rules_python//python:defs.bzl", "py_library")
+#load("@rules_python//python:defs.bzl", "py_library")
 load(
     "//transpiler:fhe_common.bzl",
     "BooleanifiedIrInfo",

@@ -57,3 +57,4 @@ Building and running this repo is non-trivial because shit is kinda broken.
     ```
 
 6. `bazel build transpiler/examples/...`
+7. Run an example (e.g `bazel-bin/transpiler/examples/cardio/cardio_tfhe_testbench`)
