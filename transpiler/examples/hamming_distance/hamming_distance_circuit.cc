@@ -12,30 +12,39 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "auction_circuit.h"
+#include "hamming_distance_circuit.h"
 
-AuctionAns Auction::compute(
-    uint16_t bids[NUM_BIDS]
-) {
-    uint16_t winningBid = bids[0];
-    uint16_t winningIndex = 0;
-  
-    #pragma hls_unroll yes
-    for (uint16_t i = 1; i < NUM_BIDS; i++) {
-        bool isWinner = bids[i] >= winningBid;
+#define SIZE 64
 
-        winningBid = isWinner ? bids[i] : winningBid;
-        winningIndex = isWinner ? i : winningIndex;
+inline bool get_bit(uint64_t flags, unsigned int n)
+{
+    return ((flags >> n) & 0x1);
+}
+
+HammingDistanceAns HammingDistance::compute(
+    uint64_t a,
+    uint64_t b)
+{
+    uint8_t distance = 0;
+
+#pragma hls_unroll yes
+    for (int i = 0; i < SIZE; i++)
+    {
+        if (get_bit(a, i) != get_bit(b, i))
+        {
+            distance++;
+        }
     }
 
-    return AuctionAns(winningBid, winningIndex);
+    return HammingDistanceAns(distance);
 }
 
 // TODO: Way to mark Calculator::process() as main function
 #pragma hls_top
-AuctionAns my_package(
-    Auction &auction,
-    uint16_t bids[NUM_BIDS]
-) {
-  return auction.compute(bids);
+HammingDistanceAns my_package(
+    HammingDistance &HammingDistance,
+    uint64_t x,
+    uint64_t y)
+{
+    return HammingDistance.compute(x, y);
 }

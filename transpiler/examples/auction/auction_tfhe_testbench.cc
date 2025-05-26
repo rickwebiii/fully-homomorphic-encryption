@@ -26,79 +26,45 @@
 #include "xls/common/logging/logging.h"
 
 #ifdef USE_INTERPRETED_TFHE
-#include "transpiler/examples/cardio/cardio_interpreted_tfhe.h"
-#include "transpiler/examples/cardio/cardio_interpreted_tfhe.types.h"
+#include "transpiler/examples/auction/auction_interpreted_tfhe.h"
+#include "transpiler/examples/auction/auction_interpreted_tfhe.types.h"
 #else
-#include "transpiler/examples/cardio/cardio_tfhe.h"
-#include "transpiler/examples/cardio/cardio_tfhe.types.h"
+#include "transpiler/examples/auction/auction_tfhe.h"
+#include "transpiler/examples/auction/auction_tfhe.types.h"
 #endif
 
-typedef unsigned char uint8_t;
+typedef unsigned short uint16_t;
 
 using namespace std;
 
 const int kMainMinimumLambda = 120;
 
 void calculate(
-     bool man,
-     bool smokes,
-     bool diabetic,
-     bool high_bp,
-     uint8_t age,
-     uint8_t hdl,
-     uint8_t weight,
-     uint8_t height,
-     uint8_t physical_activity,
-     uint8_t glasses_alcohol,
+     uint16_t bids[NUM_BIDS],
      TFHEParameters& params,
      TFHESecretKeySet& key
 ) {
   cout << "inputs are " 
-     << man << " " 
-     << smokes << " " 
-     << diabetic << " "
-     << high_bp << " "
-     << age << " "
-     << hdl << " "
-     << weight << " "
-     << height << " "
-     << physical_activity << " "
-     << glasses_alcohol << " "
-     << endl;
-
-  uint8_t flags = (uint8_t)man | ((uint8_t)smokes << 1) | ((uint8_t)diabetic << 2) | ((uint8_t)high_bp << 3);
-
+     << bids;
   // Encrypt data
-  auto encryptedFlags = Tfhe<uint8_t>::Encrypt(flags, key);
-  auto encryptedAge = Tfhe<uint8_t>::Encrypt(age, key);
-  auto encryptedHdl = Tfhe<uint8_t>::Encrypt(hdl, key);
-  auto encryptedWeight = Tfhe<uint8_t>::Encrypt(weight, key);
-  auto encryptedHeight = Tfhe<uint8_t>::Encrypt(height, key);
-  auto encryptedPhysicalActivity = Tfhe<uint8_t>::Encrypt(physical_activity, key);
-  auto encryptedGlassesAlcohol = Tfhe<uint8_t>::Encrypt(glasses_alcohol, key);
-
+  auto bids_enc = TfheArray<uint16_t, NUM_BIDS>::Encrypt(absl::MakeSpan(bids, NUM_BIDS), key);
+  
   cout << "Encryption done" << endl;
   cout << "Initial state check by decryption: " << endl;
   
   cout << "\t\t\t\t\tServer side computation:" << endl;
   // Perform computation
-  Tfhe<CardioAns> encryptedResult(params);
-  Tfhe<Cardio> cardio(params);
-  cardio.SetUnencrypted(Cardio(), key.cloud());
+  Tfhe<AuctionAns> encryptedResult(params);
+  Tfhe<Auction> auction(params);
+  auction.SetUnencrypted(Auction(), key.cloud());
 
   absl::Time start_time = absl::Now();
   double cpu_start_time = clock();
   XLS_CHECK_OK(
      my_package(
           encryptedResult,
-          cardio,
-          encryptedFlags,
-          encryptedAge,
-          encryptedHdl,
-          encryptedWeight,
-          encryptedHeight,
-          encryptedPhysicalActivity,
-          encryptedGlassesAlcohol,
+          auction,
+          bids_enc,
           key.cloud()
   ));
   double cpu_end_time = clock();
@@ -115,7 +81,7 @@ void calculate(
   absl::Time decrypt_time_end = absl::Now();
 
   cout << "Decrypted result: ";
-  cout << (unsigned int)result.risk;
+  cout << result.bid << " " << result.index;
   cout << "\n";
   cout << "Decryption done" << endl << endl;
 
@@ -137,16 +103,7 @@ int main(int argc, char** argv) {
 
   cout << "Keygen time " << (keygen_time_end - keygen_time_start) << endl;
 
-  calculate(
-     false,
-     false,
-     true,
-     true,
-     40,
-     50,
-     70,
-     170,
-     1,
-     1
-     , params, key);
+  uint16_t bids[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31};
+
+  calculate(bids, params, key);
 }

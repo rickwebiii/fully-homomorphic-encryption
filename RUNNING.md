@@ -10,7 +10,7 @@ Building and running this repo is non-trivial because shit is kinda broken.
     ```python
     if metadata.name is None:
         name = "blinker-1.9.0"
-    else :
+    else:
         name = "{}-{}".format(metadata.name.replace("-", "_"), metadata.version)
     ```
 5. `bazel build transpiler/examples/...`

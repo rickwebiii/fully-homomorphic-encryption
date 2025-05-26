@@ -12,28 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef FULLY_HOMOMORPHIC_ENCRYPTION_TRANSPILER_EXAMPLES_CALCULATOR_H_
-#define FULLY_HOMOMORPHIC_ENCRYPTION_TRANSPILER_EXAMPLES_CALCULATOR_H_
+#ifndef FULLY_HOMOMORPHIC_ENCRYPTION_TRANSPILER_EXAMPLES_HAMMING_DISTANCE_H_
+#define FULLY_HOMOMORPHIC_ENCRYPTION_TRANSPILER_EXAMPLES_HAMMING_DISTANCE_H_
 
-typedef unsigned short uint16_t;
+#ifndef INT_DEF
+typedef unsigned char uint8_t;
+typedef unsigned long long uint64_t;
+#endif
 
-#define NUM_BIDS 8
-
-class AuctionAns {
+class HammingDistanceAns {
 public: 
-  uint16_t bid;
-  uint16_t index;
+  uint8_t distance;
 
-  AuctionAns() {}
+  HammingDistanceAns() {}
 
-  AuctionAns(uint16_t bid, uint16_t index): bid(bid), index(index) {}
+  HammingDistanceAns(uint8_t distance): distance(distance) {}
 };
 
 // Sums and subtracts values
-class Auction {
+class HammingDistance {
 public:
-  AuctionAns compute(
-    uint16_t bids[NUM_BIDS]
+  HammingDistanceAns compute(
+    uint64_t x,
+    uint64_t y
   );
 };
 
