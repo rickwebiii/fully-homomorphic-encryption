@@ -40,16 +40,16 @@ using namespace std;
 const int kMainMinimumLambda = 120;
 
 void calculate(
-     uint64_t x,
-     uint64_t y,
+     uint8_t x[SIZE],
+     uint8_t y[SIZE],
      TFHEParameters& params,
      TFHESecretKeySet& key
 ) {
   cout << "inputs are " 
      << x << " " << y << endl;
   // Encrypt data
-  auto x_enc = Tfhe<uint64_t>::Encrypt(x, key);
-  auto y_enc = Tfhe<uint64_t>::Encrypt(y, key);
+  auto x_enc = TfheArray<uint8_t, SIZE>::Encrypt(absl::MakeSpan(x, SIZE), key);
+  auto y_enc = TfheArray<uint8_t, SIZE>::Encrypt(absl::MakeSpan(y, SIZE), key);
   
   cout << "Encryption done" << endl;
   cout << "Initial state check by decryption: " << endl;
@@ -106,5 +106,8 @@ int main(int argc, char** argv) {
 
   cout << "Keygen time " << (keygen_time_end - keygen_time_start) << endl;
 
-  calculate(0xFEEDF00D'CAFEBABE, 0x12345678'9ABCDEF0, params, key);
+  uint8_t a[] = {0xFE, 0xED, 0xF0, 0x0D, 0xCA, 0xFE, 0xBA, 0xBE};
+  uint8_t b[] = {0x12, 0x34, 0x56, 0x78, 0x9A, 0xBC, 0xDE, 0xF0};
+
+  calculate(a, b, params, key);
 }

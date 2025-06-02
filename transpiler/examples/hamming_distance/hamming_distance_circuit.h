@@ -20,6 +20,8 @@ typedef unsigned char uint8_t;
 typedef unsigned long long uint64_t;
 #endif
 
+#define SIZE 8
+
 class HammingDistanceAns {
 public: 
   uint8_t distance;
@@ -33,8 +35,8 @@ public:
 class HammingDistance {
 public:
   HammingDistanceAns compute(
-    uint64_t x,
-    uint64_t y
+    uint8_t x[SIZE],
+    uint8_t y[SIZE]
   );
 };
 

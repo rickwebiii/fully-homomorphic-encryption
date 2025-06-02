@@ -14,25 +14,27 @@
 
 #include "hamming_distance_circuit.h"
 
-#define SIZE 64
-
-inline bool get_bit(uint64_t flags, unsigned int n)
+inline bool get_bit(uint8_t flags, unsigned int n)
 {
     return ((flags >> n) & 0x1);
 }
 
 HammingDistanceAns HammingDistance::compute(
-    uint64_t a,
-    uint64_t b)
+    uint8_t a[SIZE],
+    uint8_t b[SIZE]
+)
 {
     uint8_t distance = 0;
 
 #pragma hls_unroll yes
     for (int i = 0; i < SIZE; i++)
     {
-        if (get_bit(a, i) != get_bit(b, i))
-        {
-            distance++;
+#pragma hls_unroll yes
+        for (int j = 0; j < 8; j++) {
+            if (get_bit(a[i], j) != get_bit(b[i], j))
+            {
+                distance++;
+            }
         }
     }
 
@@ -43,8 +45,8 @@ HammingDistanceAns HammingDistance::compute(
 #pragma hls_top
 HammingDistanceAns my_package(
     HammingDistance &HammingDistance,
-    uint64_t x,
-    uint64_t y)
+    uint8_t x[SIZE],
+    uint8_t y[SIZE])
 {
     return HammingDistance.compute(x, y);
 }
