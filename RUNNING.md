@@ -1,9 +1,9 @@
 # How to build and run the examples
-Building and running this repo is non-trivial because shit is kinda broken.
+Building and running this repo is non-trivial. Note, this assumes you're using [rootless Docker](https://docs.docker.com/engine/security/rootless/). If you aren't, put a sudo in front of each docker command.
 
 1. `docker build -t google docker/ubuntu-jammy.Dockerfile .`
 2. `docker run -it google`
-3. `apt update; apt install -y vim` 
+3. `apt update; apt install -y vim` (or your favorite CLI text editor)
 4. `bazel build transpiler/examples/...`
     * The above step will fail because `external/rules_python/python/pip_install/extract_wheels/lib/wheel.py` doesn't the metadata of `blinker-1.9.0`. Edit that file (copy the full path from the error in the terminal) and change line 58 to
 
